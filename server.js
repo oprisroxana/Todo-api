@@ -54,10 +54,38 @@ app.get('/todos/:id', function(req, res){
     } else {
       todos = _.without(todos, match);
       res.send(match);
-
      }
+  });
+
+  // PUT  /todos/:id
+  app.put('/todos/:id', function (req, res) {
+    var todoId = parseInt(req.params.id, 10);
+    var match =  _.findWhere(todos, {id :todoId});
+    var body = _.pick(req.body, "description", "completed");
+    var validAttr = {};
+
+    if (!match) {
+      return res.status(400).send();
+    }
+
+    if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
+      validAttr.completed = body.completed;
+    }else if (body.hasOwnProperty('completed')) {
+      return res.status(400).send();
+    }
+
+    if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length !== 0) {
+      validAttr.description = body.description;
+    }else if (body.hasOwnProperty('description')) {
+      return res.status(400).send();
+    }
+
+     _.extend(match, validAttr);
+
+    res.json(match);
 
   });
+
 
  app.listen(PORT, function(){
    console.log("Express listening on port " + PORT + '!');
