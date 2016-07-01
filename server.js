@@ -40,7 +40,6 @@ app.post('/todos', function (req, res) {
       todoNextId++;
       // same as body.id = todoNextId++;
       todos.push(body);
-     console.log("Body was pushed to todos array");
   res.json(body);
 });
 
